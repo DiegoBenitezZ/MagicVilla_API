@@ -1,0 +1,35 @@
+﻿@model List<VillaNumberDTO>
+
+<br/>
+<div class="container p-4 border">
+	<div class="row pb-2">
+		<div class="col">
+			<h1 class="text-primary">Villa Number List</h1>
+		</div>
+		<div class="col text-end pt-1">
+			<a asp-controller="VillaNumber" asp-action="Create" class="btn btn-outline-primary"><i class="bi bi-plus-square-fill"></i> Create New Villa</a>
+		</div>
+	</div>
+
+	<table class="table">
+		<thead>
+		<th>Villa Name</th>
+		<th>Villa No.</th>
+		<th></th>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@item.Villa.Name</td>
+					<td>@item.VillaNo</td>
+					<td>
+						<a asp-controller="VillaNumber" asp-action="Update" asp-route-VillaNo="@item.VillaNo" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
+						<a asp-controller="VillaNumber" asp-action="Delete" asp-route-VillaNo="@item.VillaNo" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
