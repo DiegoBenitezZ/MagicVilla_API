@@ -10,7 +10,15 @@
             DELETE
         }
 
-        public static string SessionToken = "JWTToken";
-        public static string CurrentApiVersion = "v1";
+        public static string AccessToken = "JWTToken";
+		public static string RefreshToken = "RefreshToken";
+		public static string CurrentApiVersion = "v2";
+        public const string Admin = "admin";
+        public const string Customer = "customer";
+        public enum ContentType
+        {
+            Json,
+            MultipartFormData
+        }
     }
 }

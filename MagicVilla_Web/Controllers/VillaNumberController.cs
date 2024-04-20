@@ -31,7 +31,7 @@ namespace MagicVilla_Web.Controllers
 
         public async Task<IActionResult> Index()
 		{
-			var response = await _villaNumberService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+			var response = await _villaNumberService.GetAllAsync<APIResponse>();
 
 			if(response != null && response.IsSuccess)
 			{
@@ -45,7 +45,7 @@ namespace MagicVilla_Web.Controllers
         public async Task<IActionResult> Create()
 		{
 			VillaNumberCreateVM villaNumberCreateVM = new();
-			var response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+			var response = await _villaService.GetAllAsync<APIResponse>();
 
 			if (response != null && response.IsSuccess)
 			{
@@ -68,21 +68,19 @@ namespace MagicVilla_Web.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var response = await _villaNumberService.CreateAsync<APIResponse>(model.VillaNumberCreateDTO, HttpContext.Session.GetString(SD.SessionToken));
+				var response = await _villaNumberService.CreateAsync<APIResponse>(model.VillaNumberCreateDTO);
 				if (response != null && response.IsSuccess)
 				{
 					return RedirectToAction(nameof(Index));
 				}
 				else
 				{
-					if(response.ErrorMessages.Count > 0)
-					{
-						ModelState.AddModelError("CustomError", response.ErrorMessages.FirstOrDefault());
-					}
+					TempData["error"] = (response.ErrorMessages != null && response.ErrorMessages.Count > 0) ?
+						response.ErrorMessages[0] : "Error Encountered";
 				}
 			}
 
-			var responseList = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+			var responseList = await _villaService.GetAllAsync<APIResponse>();
 
 			if (responseList != null && responseList.IsSuccess)
 			{
@@ -101,7 +99,7 @@ namespace MagicVilla_Web.Controllers
         public async Task<IActionResult> Update(int VillaNo)
 		{
 			VillaNumberUpdateVM villaNumberUpdateVM = new();
-			var response = await _villaNumberService.GetAsync<APIResponse>(VillaNo, HttpContext.Session.GetString(SD.SessionToken));
+			var response = await _villaNumberService.GetAsync<APIResponse>(VillaNo);
 
 			if (response != null && response.IsSuccess)
 			{
@@ -109,7 +107,7 @@ namespace MagicVilla_Web.Controllers
 				villaNumberUpdateVM.VillaNumberUpdateDTO = _mapper.Map<VillaNumberUpdateDTO>(model);
 			}
 
-			response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+			response = await _villaService.GetAllAsync<APIResponse>();
 
 			if (response != null && response.IsSuccess)
 			{
@@ -120,6 +118,11 @@ namespace MagicVilla_Web.Controllers
 				});
 
 				return View(villaNumberUpdateVM);
+			}
+			else
+			{
+				TempData["error"] = (response.ErrorMessages != null && response.ErrorMessages.Count > 0) ?
+					response.ErrorMessages[0] : "Error Encountered";
 			}
 
 			return NotFound();
@@ -133,21 +136,19 @@ namespace MagicVilla_Web.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var response = await _villaNumberService.UpdateAsync<APIResponse>(model.VillaNumberUpdateDTO, HttpContext.Session.GetString(SD.SessionToken));
+				var response = await _villaNumberService.UpdateAsync<APIResponse>(model.VillaNumberUpdateDTO);
 				if (response != null && response.IsSuccess)
 				{
 					return RedirectToAction(nameof(Index));
 				}
 				else
 				{
-					if (response.ErrorMessages.Count > 0)
-					{
-						ModelState.AddModelError("CustomError", response.ErrorMessages.FirstOrDefault());
-					}
+					TempData["error"] = (response.ErrorMessages != null && response.ErrorMessages.Count > 0) ?
+						response.ErrorMessages[0] : "Error Encountered";
 				}
 			}
 
-			var responseList = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+			var responseList = await _villaService.GetAllAsync<APIResponse>();
 
 			if (responseList != null && responseList.IsSuccess)
 			{
@@ -166,7 +167,7 @@ namespace MagicVilla_Web.Controllers
         public async Task<IActionResult> Delete(int VillaNo)
 		{
 			VillaNumberDeleteVM villaNumberDeleteVM = new();
-			var response = await _villaNumberService.GetAsync<APIResponse>(VillaNo, HttpContext.Session.GetString(SD.SessionToken));
+			var response = await _villaNumberService.GetAsync<APIResponse>(VillaNo);
 
 			if(response != null && response.IsSuccess)
 			{
@@ -174,7 +175,7 @@ namespace MagicVilla_Web.Controllers
 				villaNumberDeleteVM.VillaNumberDTO = villaNumberDTO;
 			}
 
-			response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+			response = await _villaService.GetAllAsync<APIResponse>();
 
 			if (response != null && response.IsSuccess)
 			{
@@ -198,14 +199,14 @@ namespace MagicVilla_Web.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeletePost(VillaNumberDeleteVM vm)
 		{
-			var response = await _villaNumberService.DeleteAsync<APIResponse>(vm.VillaNumberDTO.VillaNo, HttpContext.Session.GetString(SD.SessionToken));
+			var response = await _villaNumberService.DeleteAsync<APIResponse>(vm.VillaNumberDTO.VillaNo);
 
 			if (response != null && response.IsSuccess)
 			{
 				return RedirectToAction(nameof(Index));
 			}
 
-			var responseVillas = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+			var responseVillas = await _villaService.GetAllAsync<APIResponse>();
 
 			if (responseVillas != null && responseVillas.IsSuccess)
 			{
@@ -220,6 +221,11 @@ namespace MagicVilla_Web.Controllers
 				vm.VillaList = villas;
 
 				return View(vm);
+			}
+			else
+			{
+				TempData["error"] = (response.ErrorMessages != null && response.ErrorMessages.Count > 0) ?
+					response.ErrorMessages[0] : "Error Encountered";
 			}
 
 			return NotFound();

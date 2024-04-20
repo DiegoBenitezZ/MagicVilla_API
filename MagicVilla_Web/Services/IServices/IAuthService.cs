@@ -2,9 +2,11 @@
 
 namespace MagicVilla_Web.Services.IServices
 {
-	public interface IAuthService: IBaseService
+	public interface IAuthService
 	{
 		Task<T> LoginAsync<T>(LoginRequestDTO obj);
 		Task<T> RegisterAsync<T>(RegistrationRequestDTO obj);
+		Task<T> LogoutAsync<T>(TokenDTO obj);
+
 	}
 }
